@@ -151,8 +151,7 @@ PRODUCT_PACKAGES += \
 
 # Shims for krillin
 PRODUCT_PACKAGES += \
-    libkrillin \
-    libxlog
+    libkrillin
 
 # EGL Necessary package
 PRODUCT_PACKAGES += \
