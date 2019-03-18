@@ -51,7 +51,7 @@ BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
 
 # Don't build with ninja
-USE_NINJA=false
+# USE_NINJA=false
 
 # Cyanogenmod Hardware Hooks
 BOARD_USES_CYANOGEN_HARDWARE := true
