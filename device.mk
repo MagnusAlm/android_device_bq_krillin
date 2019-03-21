@@ -180,8 +180,7 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
 	ro.dalvik.vm.native.bridge=0 \
 	ro.debuggable=1 \
 	ro.hardware=sprout \
-	ro.telephony.ril_class=MediaTekRIL \
-	ro.telephony.ril.config=fakeiccid 
+        ro.telephony.ril_class=SproutRIL
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     pm.dexopt.first-boot=verify-at-runtime \

@@ -17,22 +17,13 @@
 package com.android.internal.telephony;
 
 import static com.android.internal.telephony.RILConstants.*;
-
 import com.android.internal.telephony.dataconnection.DataCallResponse;
 import com.android.internal.telephony.uicc.IccRefreshResponse;
-
 import android.content.Context;
 import android.os.AsyncResult;
 import android.os.Message;
 import android.os.Parcel;
-import android.os.SystemProperties;
-
-import android.provider.Settings;
-import android.provider.Settings.Global;
-
 import android.telephony.TelephonyManager;
-
-import com.android.internal.telephony.MtkEccList;
 
 
 /**
@@ -40,20 +31,12 @@ import com.android.internal.telephony.MtkEccList;
  *
  * {@hide}
  */
-public class MediaTekRIL extends RIL implements CommandsInterface {
-    static final String LOG_TAG = "MediaTekRIL";
+public class SproutRIL extends RIL implements CommandsInterface {
+    static final String LOG_TAG = "SproutRIL";
 
     static final int RIL_REQUEST_VENDOR_BASE = 2000;
-    static final int RIL_REQUEST_MODEM_POWEROFF = (RIL_REQUEST_VENDOR_BASE + 10);
-//    static final int RIL_REQUEST_DUAL_SIM_MODE_SWITCH  = (RIL_REQUEST_VENDOR_BASE + 11);
-//    static final int RIL_REQUEST_USIM_AUTHENTICATION  = (RIL_REQUEST_VENDOR_BASE + 27);
-    static final int RIL_REQUEST_MODEM_POWERON = (RIL_REQUEST_VENDOR_BASE + 28);
     static final int RIL_REQUEST_RESUME_REGISTRATION  = (RIL_REQUEST_VENDOR_BASE + 65);
-//    static final int RIL_REQUEST_SIM_INTERFACE_SWITCH  = (RIL_REQUEST_VENDOR_BASE + 68);
     static final int RIL_REQUEST_SET_CALL_INDICATION = (RIL_REQUEST_VENDOR_BASE + 86);
-    static final int RIL_REQUEST_EMERGENCY_DIAL = (RIL_REQUEST_VENDOR_BASE + 87);
-    static final int RIL_REQUEST_SET_ECC_SERVICE_CATEGORY = (RIL_REQUEST_VENDOR_BASE + 88);
-    static final int RIL_REQUEST_SET_ECC_LIST = (RIL_REQUEST_VENDOR_BASE + 89);
     static final int RIL_REQUEST_GENERAL_SIM_AUTH = (RIL_REQUEST_VENDOR_BASE + 90);
     static final int RIL_REQUEST_QUERY_AVAILABLE_NETWORK_WITH_ACT = (RIL_REQUEST_VENDOR_BASE + 95);
     static final int RIL_REQUEST_SWITCH_CARD_TYPE = (RIL_REQUEST_VENDOR_BASE + 131);
@@ -65,26 +48,22 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
     static final int RIL_UNSOL_CALL_INFO_INDICATION = (RIL_UNSOL_VENDOR_BASE + 49);
     static final int RIL_UNSOL_MD_STATE_CHANGE = (RIL_UNSOL_VENDOR_BASE + 53);
     static final int RIL_UNSOL_SET_ATTACH_APN = (RIL_UNSOL_VENDOR_BASE + 73);
-//    static final int RIL_UNSOL_MAL_AT_INFO = (RIL_UNSOL_VENDOR_BASE + 74);
-//    static final int RIL_UNSOL_MAIN_SIM_INFO = (RIL_UNSOL_VENDOR_BASE + 75);
-
+	
     private int[] dataCallCids = { -1, -1, -1, -1, -1 };
 
     private Context mContext;
     private TelephonyManager mTelephonyManager;
-    private MtkEccList mEccList;
 
     //***** Constructors
-    public MediaTekRIL(Context context, int preferredNetworkType, int cdmaSubscription) {
+    public SproutRIL(Context context, int preferredNetworkType, int cdmaSubscription) {
         super(context, preferredNetworkType, cdmaSubscription, null);
     }
 
-    public MediaTekRIL(Context context, int preferredNetworkType,
+    public SproutRIL(Context context, int preferredNetworkType,
             int cdmaSubscription, Integer instanceId) {
         super(context, preferredNetworkType, cdmaSubscription, instanceId);
         mContext = context;
         mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        mEccList = new MtkEccList();
     }
 
     private static String
@@ -93,11 +72,6 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
         switch(request) {
             case RIL_REQUEST_RESUME_REGISTRATION: return "RIL_REQUEST_RESUME_REGISTRATION";
             case RIL_REQUEST_SET_CALL_INDICATION: return "RIL_REQUEST_SET_CALL_INDICATION";
-            case RIL_REQUEST_EMERGENCY_DIAL: return "RIL_REQUEST_EMERGENCY_DIAL";
-            case RIL_REQUEST_SET_ECC_SERVICE_CATEGORY: return "RIL_REQUEST_SET_ECC_SERVICE_CATEGORY";
-            case RIL_REQUEST_SET_ECC_LIST: return "RIL_REQUEST_SET_ECC_LIST";
-            case RIL_REQUEST_MODEM_POWEROFF: return "RIL_REQUEST_MODEM_POWEROFF";
-            case RIL_REQUEST_MODEM_POWERON: return "RIL_REQUEST_MODEM_POWERON";
             default: return "<unknown response>";
         }
     }
@@ -113,7 +87,7 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
             case RIL_UNSOL_RESPONSE_REGISTRATION_SUSPENDED: ret = responseRegSuspended(p); break;
             case RIL_UNSOL_INCOMING_CALL_INDICATION: ret = responseIncomingCallIndication(p); break;
             case RIL_UNSOL_CALL_INFO_INDICATION: ret = responseCallProgress(p); break;
-	    case RIL_UNSOL_MD_STATE_CHANGE: ret = responseInts(p); break;
+	        case RIL_UNSOL_MD_STATE_CHANGE: ret = responseInts(p); break;
             case RIL_UNSOL_SET_ATTACH_APN: ret = responseSetAttachApn(p); break;
             case RIL_UNSOL_ON_USSD: ret =  responseStrings(p); break;
             case RIL_UNSOL_RESPONSE_PS_NETWORK_STATE_CHANGED: ret = responseInts(p); break;
@@ -211,6 +185,24 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
         return response;
     }
 
+    protected Object
+    responseFailCause(Parcel p) {
+        int numInts;
+        int response[];
+
+        numInts = p.readInt();
+        response = new int[numInts];
+        for (int i = 0 ; i < numInts ; i++) {
+            response[i] = p.readInt();
+        }
+        LastCallFailCause failCause = new LastCallFailCause();
+        failCause.causeCode = response[0];
+        if (p.dataAvail() > 0) {
+          failCause.vendorCause = p.readString();
+        }
+        return failCause;
+    }
+	
     protected Object
     responseCallProgress(Parcel p) {
         String response[];
@@ -320,77 +312,6 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
         super.deactivateDataCall(cid, reason, result);
     }
 
-    @Override
-    public void
-    dial(String address, int clirMode, UUSInfo uusInfo, Message result) {
-        if (mEccList.isEmergencyNumberExt(address)) {
-            int serviceCategory = mEccList.getServiceCategoryFromEcc(address);
-
-            RILRequest rr = RILRequest.obtain(RIL_REQUEST_SET_ECC_SERVICE_CATEGORY, null);
-
-            rr.mParcel.writeInt(1);
-            rr.mParcel.writeInt(serviceCategory);
-
-            if (RILJ_LOGD) riljLog(rr.serialString() + "> " + localRequestToString(rr.mRequest)
-                    + " " + serviceCategory);
-
-            send(rr);
-
-
-            rr = RILRequest.obtain(RIL_REQUEST_EMERGENCY_DIAL, result);
-            rr.mParcel.writeString(address);
-            rr.mParcel.writeInt(clirMode);
-            rr.mParcel.writeInt(0); // UUS information is absent
-
-            if (uusInfo == null) {
-                rr.mParcel.writeInt(0); // UUS information is absent
-            } else {
-                rr.mParcel.writeInt(1); // UUS information is present
-                rr.mParcel.writeInt(uusInfo.getType());
-                rr.mParcel.writeInt(uusInfo.getDcs());
-                rr.mParcel.writeByteArray(uusInfo.getUserData());
-            }
-
-            if (RILJ_LOGD) riljLog(rr.serialString() + "> " + localRequestToString(rr.mRequest));
-
-            send(rr);
-
-        } else {
-            super.dial(address, clirMode, uusInfo, result);
-        }
-    }
-
-    private void refreshEmergencyList() {
-        if (mEccList != null) mEccList.updateEmergencyNumbersProperty();
-    }
-
-    @Override
-    public void
-    setRadioPower(boolean on, Message result) {
-        boolean isInApm = Settings.Global.getInt(mContext.getContentResolver(),
-                                        Settings.Global.AIRPLANE_MODE_ON, 0) == 1;
-        boolean wasInApm = SystemProperties.get("persist.radio.airplane.mode.on").equals("true");
-
-        SystemProperties.set("persist.radio.airplane.mode.on", isInApm ? "true" : "false");
-
-        if (on && wasInApm && !isInApm) {
-            SystemProperties.set("gsm.ril.eboot", "0");
-            RILRequest rr = RILRequest.obtain(RIL_REQUEST_MODEM_POWERON, result);
-            if (RILJ_LOGD) {
-                riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
-            }
-            send(rr);
-        } else if (!on && isInApm) {
-            SystemProperties.set("gsm.ril.eboot", "1");
-            RILRequest rr = RILRequest.obtain(RIL_REQUEST_MODEM_POWEROFF, result);
-            if (RILJ_LOGD) {
-                riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
-            }
-            send(rr);
-        } else {
-            super.setRadioPower(on, result);
-        }
-    }
 
     // Solicited request handling
     @Override
@@ -410,15 +331,12 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
                 if (error == 0 || p.dataAvail() > 0) {
                     try {switch (tr.mRequest) {
                         /* Get those we're interested in */
-                        case RIL_REQUEST_EMERGENCY_DIAL:
-                        case RIL_REQUEST_SET_ECC_SERVICE_CATEGORY:
                         case RIL_REQUEST_DATA_REGISTRATION_STATE:
                         case RIL_REQUEST_SETUP_DATA_CALL:
                         case RIL_REQUEST_ALLOW_DATA:
                             rr = tr;
                             break;
                         // vendor ril refreshes the properties while generating this answer. Do our own updates afterwards
-                        case RIL_REQUEST_GET_SIM_STATUS: refreshEmergencyList(); // no break, we want the superclass to process this
                     }} catch (Throwable thr) {
                         // Exceptions here usually mean invalid RIL responses
                         if (tr.mResult != null) {
@@ -450,8 +368,6 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
 
         if (error == 0 || p.dataAvail() > 0) {
             switch (rr.mRequest) {
-                case RIL_REQUEST_EMERGENCY_DIAL: ret =  responseVoid(p); break;
-                case RIL_REQUEST_SET_ECC_SERVICE_CATEGORY: ret =  responseVoid(p); break;
                 case RIL_REQUEST_DATA_REGISTRATION_STATE: ret =  fixupPSBearerDataRegistration(p); break;
                 case RIL_REQUEST_SETUP_DATA_CALL: ret =  fetchCidFromDataCall(p); break;
                 case RIL_REQUEST_ALLOW_DATA: ret =  responseVoid(p); mVoiceNetworkStateRegistrants.notifyRegistrants(new AsyncResult(null, null, null)); break;

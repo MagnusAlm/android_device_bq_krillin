@@ -29,9 +29,6 @@ media.stagefright.legacyencoder=true
 media.stagefright.less-secure=true
 ro.camera.sound.forced=0
 
-ro.telephony.ril_class=MediaTekRIL
-ro.telephony.ril.config=fakeiccid
-rild.libpath=/system/lib/mtk-ril.so
 rild.libargs=-d /dev/ttyC0
 ro.telephony.default_network=0,1
 ril.first.md=1
