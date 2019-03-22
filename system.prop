@@ -38,7 +38,6 @@ persist.mtk.wcn.combo.chipid=-1
 ril.specific.sm_cause=0
 bgw.current3gband=0
 ril.external.md=0
-ro.sf.hwrotation=0
 ril.current.share_modem=2
 ril.radiooff.poweroffMD=0
 ro.telephony.sim.count=2

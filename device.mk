@@ -70,7 +70,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd_default.conf:system/etc/hostapd/hostapd_default.conf \
     $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd.accept:system/etc/hostapd/hostapd.accept \
     $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd.deny:system/etc/hostapd/hostapd.deny \
-    $(LOCAL_PATH)/rootdir/system/etc/android.hardware.usb.host.xml:system/etc/android.hardware.usb.host.xml \
     $(LOCAL_PATH)/rootdir/system/etc/fmr/mt6627_fm_cust.cfg:system/etc/fmr/mt6627_fm_cust.cfg
 
 PRODUCT_TAGS += dalvik.gc.type-precise
