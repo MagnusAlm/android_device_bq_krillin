@@ -22,7 +22,7 @@ cd ../../../..
 
 # Clone the recovery and the busybox tools
 git clone https://github.com/LineageOS/android_external_busybox external/busybox
-git clone https://github.com/OmniROM/android_bootable_recovery bootable/recovery-twrp
+git clone https://github.com/OmniROM/android_bootable_recovery -b android-7.1 bootable/recovery-twrp
 
 # Build Script...
 . build/envsetup.sh
@@ -32,3 +32,7 @@ export WITH_TWRP=true
 
 # Lunch
 lunch
+
+echo "Now start compile with:"
+echo " "
+echo "make -j4 bacon"
