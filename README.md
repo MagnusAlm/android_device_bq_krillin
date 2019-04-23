@@ -18,9 +18,7 @@ Camera  | 8MPx, LED Flash
 
 This branch is work in progress for building Nougat ROMS and TWRP recovery for BQ Aquaris E4.5.
 
-Most things work like phone calls, sms, mms, mobile data (with workaround), FM Radio, wifi, camera, wifi hotspot and adb.
-
-Not working that I know of: wifi with hidden ssid.
+Most things work like phone calls, sms, mms, mobile data (with workaround, toggle airplane mode), FM Radio, wifi (also with hidden ssid), OTG, camera, wifi hotspot, mtp and adb.
 
 
 ### Full Compilation guide ( I've only tested it on Xubuntu 17.10 and 18.04)
@@ -85,6 +83,12 @@ Not working that I know of: wifi with hidden ssid.
     lunch lineage_krillin-userdebug
 
     make -j4 bacon
+
+    # If you get a compilation error from flex because you have a character set with offending characters, like I have in Swedish.
+
+    export LANGUAGE=en
+    export LANG=en_US
+    export LC_ALL=C
 
 
 ### Recovery Compilation (TWRP Variant):
