@@ -50,8 +50,8 @@ BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 -
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
 
-# Don't build with ninja
-# USE_NINJA=false
+# Bild with ninja
+USE_NINJA=true
 
 # Cyanogenmod Hardware Hooks
 BOARD_USES_CYANOGEN_HARDWARE := true
@@ -98,8 +98,6 @@ TW_INTERNAL_STORAGE_MOUNT_POINT := "data"
 TW_EXTERNAL_STORAGE_PATH := "/external_sd"
 TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
 else
-# Craps out compilation.....
-# TARGET_NO_RECOVERY := true 
 TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/root/recovery.fstab
 endif
 

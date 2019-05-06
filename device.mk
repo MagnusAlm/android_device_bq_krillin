@@ -113,7 +113,8 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf
 	
 PRODUCT_PACKAGES += \
-    librs_jni
+    librs_jni \
+    libion
 
 # USB
 PRODUCT_PACKAGES += \
@@ -135,12 +136,10 @@ PRODUCT_PACKAGES += \
     e2fsck \
     fsck.f2fs \
     mkfs.f2fs \
-    make_ext4fs
-PRODUCT_PACKAGES += \
+    make_ext4fs \
     mount.exfat \
     fsck.exfat \
-    mkfs.exfat
-PRODUCT_PACKAGES += \
+    mkfs.exfat \
     fsck.ntfs \
     mkfs.ntfs \
     mount.ntfs
@@ -167,19 +166,19 @@ PRODUCT_PACKAGES += \
 
 # Default Propierties
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
-	ro.crypto.state=unencrypted \
-	ro.mount.fs=EXT4 \
-	ro.allow.mock.location=0 \
-	ro.zygote=zygote32 \
-	camera.disable_zsl_mode=1 \
-	dalvik.vm.dex2oat-Xms=64m \
-	dalvik.vm.dex2oat-Xmx=512m \
-	dalvik.vm.image-dex2oat-Xms=64m \
-	dalvik.vm.image-dex2oat-Xmx=64m \
-	ro.dalvik.vm.native.bridge=0 \
-	ro.debuggable=1 \
-	ro.hardware=sprout \
-        ro.telephony.ril_class=SproutRIL
+    ro.crypto.state=unencrypted \
+    ro.mount.fs=EXT4 \
+    ro.allow.mock.location=0 \
+    ro.zygote=zygote32 \
+    camera.disable_zsl_mode=1 \
+    dalvik.vm.dex2oat-Xms=64m \
+    dalvik.vm.dex2oat-Xmx=512m \
+    dalvik.vm.image-dex2oat-Xms=64m \
+    dalvik.vm.image-dex2oat-Xmx=64m \
+    ro.dalvik.vm.native.bridge=0 \
+    ro.debuggable=1 \
+    ro.hardware=sprout \
+    ro.telephony.ril_class=SproutRIL
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     pm.dexopt.first-boot=verify-at-runtime \
@@ -200,7 +199,3 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.config.vc_call_vol_steps=14 \
     ro.config.media_vol_steps=30
-	
-# LOGD TOOL
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/tools/logd:system/bin/logd
