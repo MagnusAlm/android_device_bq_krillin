@@ -21,7 +21,7 @@ PRODUCT_AAPT_CONFIG := normal mdpi
 PRODUCT_AAPT_PREF_CONFIG := mdpi
 
 # Inherit some common CM stuff.
-CM_BUILDTYPE := EXPERIMENTAL
+CM_BUILDTYPE := UNOFFICIAL
 
 # Krillin specific propierties
 ADDITIONAL_DEFAULT_PROPERTIES += ro.adb.secure=0
